@@ -6,6 +6,7 @@ import com.example.x_leagues.model.Competition;
 import com.example.x_leagues.repository.CompetitionRepository;
 import com.example.x_leagues.services.CompetitionService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -22,7 +23,7 @@ public class CompetitionServiceImpl implements CompetitionService {
     }
 
 
-
+    @Transactional
     @Override
     public Competition save(Competition competition){
         Optional<Competition> competitionOptional = competitionRepository.findByCode(competition.getCode());

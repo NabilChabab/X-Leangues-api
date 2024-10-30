@@ -17,7 +17,9 @@ public class Participation{
     @Id @GeneratedValue(strategy =  GenerationType.UUID)
     private UUID id;
 
+
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private AppUser appUser;
 
     @ManyToOne
