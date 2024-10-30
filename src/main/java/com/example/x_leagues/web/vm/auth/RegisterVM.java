@@ -1,4 +1,4 @@
-package com.example.x_leagues.web.vm;
+package com.example.x_leagues.web.vm.auth;
 
 import com.example.x_leagues.annotations.UniqueEmail;
 import com.example.x_leagues.annotations.UniqueUsername;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 
 @Data
-public class AppUserVm {
+public class RegisterVM {
 
     @UniqueUsername
     @NotBlank(message = "Username is required")
