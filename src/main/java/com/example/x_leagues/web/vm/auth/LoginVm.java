@@ -1,4 +1,4 @@
-package com.example.x_leagues.web.vm;
+package com.example.x_leagues.web.vm.auth;
 
 
 import jakarta.validation.constraints.NotBlank;

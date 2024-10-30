@@ -1,13 +1,12 @@
-package com.example.x_leagues.web.api.v1;
+package com.example.x_leagues.web.api.v1.auth;
 import com.example.x_leagues.model.AppUser;
-import com.example.x_leagues.services.dto.AppUserDTO;
-import com.example.x_leagues.web.vm.LoginVm;
+import com.example.x_leagues.web.vm.auth.AuthResponseVM;
+import com.example.x_leagues.web.vm.auth.LoginVm;
+import com.example.x_leagues.web.vm.auth.RegisterVM;
 import com.example.x_leagues.web.vm.mapper.AppUserMapper;
 import com.example.x_leagues.services.impl.AppUserServiceImpl;
-import com.example.x_leagues.web.vm.AppUserVm;
 import com.example.x_leagues.web.vm.mapper.LoginMapper;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,28 +28,27 @@ public class AppUserController {
         this.loginMapper = loginMapper;
     }
 
-
     @PostMapping("/register")
-    public ResponseEntity<AppUserDTO> save(@RequestBody @Valid AppUserVm appUserVm){
-        AppUser appUser = appUserMapper.toEntity(appUserVm);
+    public ResponseEntity<AuthResponseVM> save(@RequestBody @Valid RegisterVM registerVM){
+        AppUser appUser = appUserMapper.toEntity(registerVM);
         AppUser savedAppUser = appUserService.save(appUser);
-        AppUserDTO appUserDTO = appUserMapper.toDTO(savedAppUser);
-        return new ResponseEntity<>(appUserDTO, HttpStatus.CREATED);
+        AuthResponseVM authResponseVM = appUserMapper.toVM(savedAppUser);
+        return new ResponseEntity<>(authResponseVM, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<AppUserDTO> findById(@PathVariable UUID id){
+    @GetMapping("/user/{id}")
+    public ResponseEntity<AuthResponseVM> findById(@PathVariable UUID id){
         AppUser appUser = appUserService.findById(id);
-        AppUserDTO appUserDTO = appUserMapper.toDTO(appUser);
-        return new ResponseEntity<>(appUserDTO, HttpStatus.OK);
+        AuthResponseVM authResponseVM = appUserMapper.toVM(appUser);
+        return new ResponseEntity<>(authResponseVM, HttpStatus.OK);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AppUserDTO> login(@RequestBody LoginVm loginVm){
+    public ResponseEntity<AuthResponseVM> login(@RequestBody LoginVm loginVm){
         AppUser appUser = loginMapper.toEntity(loginVm);
         AppUser appUser1 = appUserService.login(appUser.getUsername(), appUser.getPassword());
-        AppUserDTO appUserDTO = loginMapper.toDTO(appUser1);
-        return new ResponseEntity<>(appUserDTO, HttpStatus.OK);
+        AuthResponseVM authResponseVM = loginMapper.toVM(appUser1);
+        return new ResponseEntity<>(authResponseVM, HttpStatus.OK);
     }
 
 }
