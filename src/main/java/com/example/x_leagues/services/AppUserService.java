@@ -14,4 +14,6 @@ public interface AppUserService {
     boolean checkPassword(String rawPassword, String encodedPassword);
 
     AppUser findById(UUID id);
+
+    AppUser login(String username, String password);
 }
