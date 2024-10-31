@@ -7,11 +7,11 @@ import lombok.Data;
 import java.util.UUID;
 
 @Data
-public class AuthResponseVM {
+public class ResponseVM {
 
     private UUID id;
     private String username;
     private String email;
     private Role role;
-
+    private String redirect;
 }

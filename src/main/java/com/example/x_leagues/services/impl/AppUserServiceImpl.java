@@ -8,11 +8,12 @@ import com.example.x_leagues.exceptions.UserNotFoundException;
 import com.example.x_leagues.repository.AppUserRepository;
 import com.example.x_leagues.utils.PasswordEncoderUtil;
 
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -45,9 +46,9 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public AppUser findById(UUID id){
+    public Optional<AppUser> findById(UUID id){
         AppUser appUser = appUserRepository.findById(id).orElseThrow(() -> new UserNotFoundException("AppUser not found with id : " + id));
-        return appUser;
+        return Optional.ofNullable(appUser);
     }
 
     @Override
@@ -57,6 +58,27 @@ public class AppUserServiceImpl implements AppUserService {
             throw new UserNotFoundException("Invalid password");
         }
         return appUser;
+    }
+
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<AppUser> findAll(Pageable pageable) {
+        return appUserRepository.findAll(pageable);
+    }
+
+    @Override
+    public List<AppUser> searchMembersByUsernameOrEmail(String searchTerm) {
+        return appUserRepository.findByUsernameContainingIgnoreCaseOrEmailContainingIgnoreCase(searchTerm, searchTerm);
+    }
+
+
+    public AppUser update(UUID id ,  AppUser appUser) {
+        AppUser appUser1 = appUserRepository.findById(id).orElseThrow(() -> new UserNotFoundException("AppUser not found with id : " + appUser.getId()));
+        appUser1.setUsername(appUser.getUsername());
+        appUser1.setEmail(appUser.getEmail());
+        appUser1.setNationality(appUser.getNationality());
+        return appUserRepository.save(appUser1);
     }
 
 

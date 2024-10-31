@@ -10,7 +10,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class CompetitionVm {
+public class CompetitionVM {
 
 
     @NotBlank(message = "Code is required")

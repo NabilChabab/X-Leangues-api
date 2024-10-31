@@ -7,6 +7,8 @@ import com.example.x_leagues.services.impl.ParticipationServiceImpl;
 import com.example.x_leagues.web.vm.mapper.ParticipationMapper;
 import com.example.x_leagues.web.vm.participation.ParticipationVM;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,5 +32,13 @@ public class ParticipationController {
         Participation savedParticipation = participationService.save(participation);
         ParticipationVM participationVM1 = participationMapper.toVM(savedParticipation);
         return ResponseEntity.ok(participationVM1);
+    }
+
+
+    @GetMapping("/participations")
+    public ResponseEntity<Page<ParticipationVM>> findAll(Pageable pageable){
+        Page<Participation> participations = participationService.findAll(pageable);
+        Page<ParticipationVM> participationVM = participations.map(participationMapper::toVM);
+        return ResponseEntity.ok(participationVM);
     }
 }
