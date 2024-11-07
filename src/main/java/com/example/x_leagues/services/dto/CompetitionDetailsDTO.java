@@ -1,13 +1,14 @@
-package com.example.x_leagues.web.vm.competitions;
+package com.example.x_leagues.services.dto;
 
-
-import com.example.x_leagues.model.enums.SpeciesType;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
-public class CompetitionResponseVM {
+@AllArgsConstructor
+public class CompetitionDetailsDTO {
+
     private String location;
     private LocalDateTime date;
     private Integer numberOfParticipants;
