@@ -12,4 +12,5 @@ public interface CompetitionRepository extends JpaRepository<Competition , UUID>
 
 
     Optional<Competition> findByCode(String code);
+
 }
