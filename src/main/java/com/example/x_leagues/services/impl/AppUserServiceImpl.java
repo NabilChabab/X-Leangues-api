@@ -68,10 +68,9 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public List<AppUser> searchMembersByUsernameOrEmail(String searchTerm) {
-        return appUserRepository.findByUsernameContainingIgnoreCaseOrEmailContainingIgnoreCase(searchTerm, searchTerm);
+    public List<AppUser> searchMembersByUsernameOrEmail(String search) {
+        return appUserRepository.findByUsernameContainingIgnoreCaseOrEmailContainingIgnoreCase(search, search);
     }
-
 
     public AppUser update(UUID id ,  AppUser appUser) {
         AppUser appUser1 = appUserRepository.findById(id).orElseThrow(() -> new UserNotFoundException("AppUser not found with id : " + appUser.getId()));
