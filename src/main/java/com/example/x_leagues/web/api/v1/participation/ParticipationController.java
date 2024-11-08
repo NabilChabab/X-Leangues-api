@@ -3,7 +3,9 @@ package com.example.x_leagues.web.api.v1.participation;
 
 import com.example.x_leagues.model.Participation;
 import com.example.x_leagues.services.ParticipationService;
+import com.example.x_leagues.services.dto.CompetitionHistoryDTO;
 import com.example.x_leagues.services.dto.CompetitionResultDTO;
+import com.example.x_leagues.services.dto.PodiumDTO;
 import com.example.x_leagues.services.dto.ScoreUpdateDTO;
 import com.example.x_leagues.services.impl.ParticipationServiceImpl;
 import com.example.x_leagues.web.vm.mapper.ParticipationMapper;
@@ -58,5 +60,15 @@ public class ParticipationController {
     @GetMapping("/{userId}/results")
     public List<CompetitionResultDTO> getUserCompetitionResults(@PathVariable UUID userId) {
         return participationService.getUserCompetitionResults(userId);
+    }
+
+    @GetMapping("/{competitionId}/podium")
+    public List<PodiumDTO> getCompetitionPodium(@PathVariable UUID competitionId) {
+        return participationService.getCompetitionPodium(competitionId);
+    }
+
+    @GetMapping("/{appUserId}/competition-history")
+    public List<CompetitionHistoryDTO> getAppUserCompetitionHistory(@PathVariable UUID appUserId) {
+        return participationService.getUserCompetitionHistory(appUserId);
     }
 }

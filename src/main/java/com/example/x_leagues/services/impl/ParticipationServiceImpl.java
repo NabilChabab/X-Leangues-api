@@ -3,7 +3,9 @@ package com.example.x_leagues.services.impl;
 import com.example.x_leagues.model.Participation;
 import com.example.x_leagues.repository.ParticipationRepository;
 import com.example.x_leagues.services.ParticipationService;
+import com.example.x_leagues.services.dto.CompetitionHistoryDTO;
 import com.example.x_leagues.services.dto.CompetitionResultDTO;
+import com.example.x_leagues.services.dto.PodiumDTO;
 import com.example.x_leagues.services.dto.ScoreUpdateDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -60,5 +62,49 @@ public class ParticipationServiceImpl implements ParticipationService {
                         participation.getScore()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PodiumDTO> getCompetitionPodium(UUID competitionId) {
+        List<Participation> topParticipants = participationRepository.findTop3ByCompetitionIdOrderByScoreDesc(competitionId);
+
+        return topParticipants.stream()
+                .map(participation -> new PodiumDTO(
+                        participation.getId(),
+                        participation.getAppUser().getUsername(),
+                        participation.getScore()
+                ))
+                .collect(Collectors.toList());
+
+    }
+
+    @Override
+    public List<CompetitionHistoryDTO> getUserCompetitionHistory(UUID userId) {
+        List<Participation> pastParticipations = participationRepository.findPastCompetitionsByAppUserId(userId);
+
+        return pastParticipations.stream().map(participation -> {
+            CompetitionHistoryDTO historyDTO = new CompetitionHistoryDTO(
+                    participation.getCompetition().getId(),
+                    participation.getCompetition().getDate(),
+                    participation.getCompetition().getLocation(),
+                    participation.getScore(),
+                    calculateRank(participation)
+            );
+            return historyDTO;
+        }).collect(Collectors.toList());
+    }
+
+    private Integer calculateRank(Participation participation) {
+        List<Participation> sortedParticipants = participation.getCompetition().getParticipations()
+                .stream()
+                .sorted((p1, p2) -> Double.compare(p2.getScore(), p1.getScore()))
+                .collect(Collectors.toList());
+
+        for (int i = 0; i < sortedParticipants.size(); i++) {
+            if (sortedParticipants.get(i).getId().equals(participation.getId())) {
+                return i + 1;
+            }
+        }
+        return null;
     }
 }
