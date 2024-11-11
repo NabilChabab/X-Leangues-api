@@ -68,8 +68,8 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public List<AppUser> searchMembersByUsernameOrEmail(String search) {
-        return appUserRepository.findByUsernameContainingIgnoreCaseOrEmailContainingIgnoreCase(search, search);
+    public List<AppUser> searchMembers(String cin , String firstName , String lastName) {
+        return appUserRepository.findByCriteria(cin, firstName, lastName);
     }
 
     public AppUser update(UUID id ,  AppUser appUser) {

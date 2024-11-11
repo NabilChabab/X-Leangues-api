@@ -68,7 +68,9 @@ public class ParticipationController {
     }
 
     @GetMapping("/{appUserId}/competition-history")
-    public List<CompetitionHistoryDTO> getAppUserCompetitionHistory(@PathVariable UUID appUserId) {
-        return participationService.getUserCompetitionHistory(appUserId);
+    public Page<CompetitionHistoryDTO> getAppUserCompetitionHistory(@PathVariable UUID appUserId , Pageable pageable) {
+        {
+            return participationService.getUserCompetitionHistory(appUserId, pageable);
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.x_leagues.services.impl;
 
+import com.example.x_leagues.exceptions.ParticipationException;
 import com.example.x_leagues.model.Participation;
 import com.example.x_leagues.repository.ParticipationRepository;
 import com.example.x_leagues.services.ParticipationService;
@@ -8,10 +9,13 @@ import com.example.x_leagues.services.dto.CompetitionResultDTO;
 import com.example.x_leagues.services.dto.PodiumDTO;
 import com.example.x_leagues.services.dto.ScoreUpdateDTO;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -30,6 +34,32 @@ public class ParticipationServiceImpl implements ParticipationService {
     @Transactional
     @Override
     public Participation save(Participation participation) {
+
+        if (participation.getAppUser() == null || participation.getCompetition() == null) {
+            throw new ParticipationException("User ID or Competition ID cannot be null.");
+        }
+
+        LocalDateTime competitionStartDate = participation.getCompetition().getDate();
+        LocalDateTime now = LocalDateTime.now();
+
+        if (!participation.getCompetition().getOpenRegistration() || competitionStartDate.minusHours(24).isBefore(now)) {
+            throw new ParticipationException("Registration is closed for this competition.");
+        }
+
+        LocalDate today = LocalDate.now();
+        LocalDate licenseExpirationDate = participation.getAppUser().getLicenseExpirationDate().toLocalDate();
+
+        if (licenseExpirationDate.isBefore(today)) {
+            throw new ParticipationException("Participation not allowed: the user's license is expired.");
+        }
+
+        int maxParticipants = participation.getCompetition().getMaxParticipants();
+        long currentParticipantsCount = participationRepository.countByCompetitionId(participation.getCompetition().getId());
+
+        if (currentParticipantsCount >= maxParticipants) {
+            throw new ParticipationException("Cannot join: The maximum number of participants for this competition has been reached.");
+        }
+
         return participationRepository.save(participation);
     }
 
@@ -79,19 +109,18 @@ public class ParticipationServiceImpl implements ParticipationService {
     }
 
     @Override
-    public List<CompetitionHistoryDTO> getUserCompetitionHistory(UUID userId) {
-        List<Participation> pastParticipations = participationRepository.findPastCompetitionsByAppUserId(userId);
+    public Page<CompetitionHistoryDTO> getUserCompetitionHistory(UUID userId, Pageable pageable) {
+        Page<Participation> pastParticipations = participationRepository.findPastCompetitionsByAppUserId(userId, pageable);
 
-        return pastParticipations.stream().map(participation -> {
-            CompetitionHistoryDTO historyDTO = new CompetitionHistoryDTO(
+        return pastParticipations.map(participation -> {
+            return new CompetitionHistoryDTO(
                     participation.getCompetition().getId(),
                     participation.getCompetition().getDate(),
                     participation.getCompetition().getLocation(),
                     participation.getScore(),
                     calculateRank(participation)
             );
-            return historyDTO;
-        }).collect(Collectors.toList());
+        });
     }
 
     private Integer calculateRank(Participation participation) {

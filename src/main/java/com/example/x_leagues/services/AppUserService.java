@@ -22,5 +22,5 @@ public interface AppUserService {
 
     Page<AppUser> findAll(Pageable pageable);
 
-    List<AppUser> searchMembersByUsernameOrEmail(String searchTerm);
+    List<AppUser> searchMembers(String cin , String firstName , String lastName);
 }
