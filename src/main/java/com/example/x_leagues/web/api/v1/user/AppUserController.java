@@ -30,8 +30,11 @@ public class AppUserController {
 
 
     @GetMapping("/search-members")
-    public ResponseEntity<List<ResponseVM>> searchMembers(@RequestParam("q") String query) {
-        List<AppUser> users = appUserService.searchMembersByUsernameOrEmail(query);
+    public ResponseEntity<List<ResponseVM>> searchMembers(
+            @RequestParam(required = false) String cin,
+            @RequestParam(required = false) String firstName,
+            @RequestParam(required = false) String lastName) {
+        List<AppUser> users = appUserService.searchMembers(cin, firstName, lastName);
         List<ResponseVM> responseVM = appUserMapper.toVMs(users);
         return ResponseEntity.ok(responseVM);
     }
