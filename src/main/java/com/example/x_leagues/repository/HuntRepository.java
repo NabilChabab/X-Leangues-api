@@ -16,6 +16,6 @@ public interface HuntRepository extends JpaRepository<Hunt, UUID> {
 
     @Modifying
     @Transactional
-    @Query(value = "DELETE FROM hunt WHERE species_id = :speciesId", nativeQuery = true)
-    void deleteBySpeciesId(@Param("speciesId") UUID speciesId);
+    @Query(value = "CALL delete_hunts_by_species_id(:speciesId)", nativeQuery = true)
+    void deleteBySpeciesIdUsingProcedure(@Param("speciesId") UUID speciesId);
 }

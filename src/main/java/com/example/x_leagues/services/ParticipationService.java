@@ -20,5 +20,5 @@ public interface ParticipationService {
     Participation updateScore(UUID participationId, Double score);
     List<CompetitionResultDTO> getUserCompetitionResults(UUID userId);
     List<PodiumDTO> getCompetitionPodium(UUID competitionId);
-    List<CompetitionHistoryDTO> getUserCompetitionHistory(UUID userId);
+    Page<CompetitionHistoryDTO> getUserCompetitionHistory(UUID userId , Pageable pageable);
 }
