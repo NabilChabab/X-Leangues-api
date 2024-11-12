@@ -1,7 +1,9 @@
 package com.example.x_leagues.services.impl;
 
 import com.example.x_leagues.exceptions.ParticipationException;
+import com.example.x_leagues.model.Hunt;
 import com.example.x_leagues.model.Participation;
+import com.example.x_leagues.model.Species;
 import com.example.x_leagues.repository.ParticipationRepository;
 import com.example.x_leagues.services.ParticipationService;
 import com.example.x_leagues.services.dto.CompetitionHistoryDTO;
@@ -26,9 +28,11 @@ import java.util.stream.Collectors;
 public class ParticipationServiceImpl implements ParticipationService {
 
     private final ParticipationRepository participationRepository;
+    private final HuntServiceImpl huntService;
 
-    public ParticipationServiceImpl(ParticipationRepository participationRepository) {
+    public ParticipationServiceImpl(ParticipationRepository participationRepository, HuntServiceImpl huntService) {
         this.participationRepository = participationRepository;
+        this.huntService = huntService;
     }
 
     @Transactional
@@ -69,14 +73,6 @@ public class ParticipationServiceImpl implements ParticipationService {
         return participationRepository.findAll(pageable);
     }
 
-    @Transactional
-    @Override
-    public Participation updateScore(UUID participationId, Double score) {
-        Participation participation = participationRepository.findById(participationId)
-                .orElseThrow(() -> new RuntimeException("Participation not found"));
-        participation.setScore(score);
-        return participationRepository.save(participation);
-    }
 
     @Transactional(readOnly = true)
     @Override
@@ -123,6 +119,23 @@ public class ParticipationServiceImpl implements ParticipationService {
         });
     }
 
+    @Override
+    public double updateScore(Participation participation) {
+        List<Hunt> hunts = huntService.findByParticipation(participation);
+        double totalScore = 0.0;
+
+        for (Hunt hunt : hunts) {
+            Species species = hunt.getSpecies();
+            double weight = hunt.getWeight();
+            totalScore += weight + (weight * species.getDifficulty().getValue()) + species.getPoints();
+        }
+
+        participation.setScore(totalScore);
+        participationRepository.save(participation);
+
+        return totalScore;
+    }
+
     private Integer calculateRank(Participation participation) {
         List<Participation> sortedParticipants = participation.getCompetition().getParticipations()
                 .stream()
@@ -135,5 +148,10 @@ public class ParticipationServiceImpl implements ParticipationService {
             }
         }
         return null;
+    }
+
+    public Participation findById( UUID participationId) {
+        return participationRepository.findById(participationId)
+                .orElseThrow(() -> new RuntimeException("Species with id '" + participationId + "' does not exist."));
     }
 }
