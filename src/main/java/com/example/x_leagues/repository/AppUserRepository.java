@@ -1,6 +1,7 @@
 package com.example.x_leagues.repository;
 
 import com.example.x_leagues.model.AppUser;
+import com.example.x_leagues.services.dto.SearchDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,11 +19,5 @@ public interface AppUserRepository extends JpaRepository<AppUser, UUID> {
     boolean existsByEmail(String email);
     Optional<AppUser> findByUsernameOrEmail(String username, String email);
     Optional<AppUser> findByUsername(String username);
-    @Query("SELECT u FROM AppUser u " +
-            "WHERE (:cin IS NULL OR u.cin = :cin) " +
-            "AND (:firstName IS NULL OR CAST(u.firstName AS string) LIKE CONCAT('%', :firstName, '%')) " +
-            "AND (:lastName IS NULL OR CAST(u.lastName AS string) LIKE CONCAT('%', :lastName, '%'))")
-    List<AppUser> findByCriteria(@Param("cin") String cin,
-                                 @Param("firstName") String firstName,
-                                 @Param("lastName") String lastName);
+
 }
