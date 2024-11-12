@@ -1,6 +1,7 @@
 package com.example.x_leagues.services;
 
 import com.example.x_leagues.model.AppUser;
+import com.example.x_leagues.services.dto.SearchDTO;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,5 +23,5 @@ public interface AppUserService {
 
     Page<AppUser> findAll(Pageable pageable);
 
-    List<AppUser> searchMembers(String cin , String firstName , String lastName);
+    List<SearchDTO> searchMembers(SearchDTO searchDTO);
 }

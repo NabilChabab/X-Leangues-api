@@ -1,6 +1,7 @@
 package com.example.x_leagues.web.api.v1.user;
 
 import com.example.x_leagues.model.AppUser;
+import com.example.x_leagues.services.dto.SearchDTO;
 import com.example.x_leagues.services.impl.AppUserServiceImpl;
 import com.example.x_leagues.web.vm.auth.ResponseVM;
 import com.example.x_leagues.web.vm.mapper.AppUserMapper;
@@ -30,13 +31,13 @@ public class AppUserController {
 
 
     @GetMapping("/search-members")
-    public ResponseEntity<List<ResponseVM>> searchMembers(
+    public ResponseEntity<List<SearchDTO>> searchMembers(
             @RequestParam(required = false) String cin,
             @RequestParam(required = false) String firstName,
             @RequestParam(required = false) String lastName) {
-        List<AppUser> users = appUserService.searchMembers(cin, firstName, lastName);
-        List<ResponseVM> responseVM = appUserMapper.toVMs(users);
-        return ResponseEntity.ok(responseVM);
+        SearchDTO searchDTO = new SearchDTO(cin, firstName, lastName);
+        List<SearchDTO> users = appUserService.searchMembers(searchDTO);
+        return ResponseEntity.ok(users);
     }
 
     @GetMapping("/user/{id}")
