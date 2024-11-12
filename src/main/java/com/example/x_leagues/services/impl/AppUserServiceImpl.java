@@ -3,9 +3,11 @@ package com.example.x_leagues.services.impl;
 
 import com.example.x_leagues.exceptions.UserAlreadyExistException;
 import com.example.x_leagues.model.AppUser;
+import com.example.x_leagues.repository.AppUserSearchRepository;
 import com.example.x_leagues.services.AppUserService;
 import com.example.x_leagues.exceptions.UserNotFoundException;
 import com.example.x_leagues.repository.AppUserRepository;
+import com.example.x_leagues.services.dto.SearchDTO;
 import com.example.x_leagues.utils.PasswordEncoderUtil;
 
 import org.springframework.data.domain.Page;
@@ -21,10 +23,12 @@ import java.util.UUID;
 public class AppUserServiceImpl implements AppUserService {
 
     private final AppUserRepository appUserRepository;
+    private final AppUserSearchRepository appUserSearchRepository;
     private final PasswordEncoderUtil passwordEncoder;
 
-    public AppUserServiceImpl(AppUserRepository appUserRepository, PasswordEncoderUtil passwordEncoder) {
+    public AppUserServiceImpl(AppUserRepository appUserRepository, AppUserSearchRepository appUserSearchRepository, PasswordEncoderUtil passwordEncoder) {
         this.appUserRepository = appUserRepository;
+        this.appUserSearchRepository = appUserSearchRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -68,8 +72,8 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public List<AppUser> searchMembers(String cin , String firstName , String lastName) {
-        return appUserRepository.findByCriteria(cin, firstName, lastName);
+    public List<SearchDTO> searchMembers(SearchDTO searchDTO) {
+        return appUserSearchRepository.findByCriteria(searchDTO);
     }
 
     public AppUser update(UUID id ,  AppUser appUser) {
