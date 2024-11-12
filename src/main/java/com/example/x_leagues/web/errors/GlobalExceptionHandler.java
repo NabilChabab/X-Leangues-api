@@ -2,6 +2,7 @@ package com.example.x_leagues.web.errors;
 
 
 import com.example.x_leagues.exceptions.CompetitionException;
+import com.example.x_leagues.exceptions.ParticipationException;
 import com.example.x_leagues.exceptions.UserAlreadyExistException;
 import com.example.x_leagues.exceptions.UserNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -42,5 +43,19 @@ public class GlobalExceptionHandler {
         Map<String, String> error = new HashMap<>();
         error.put("error", exception.getMessage());
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(ParticipationException.class)
+    public ResponseEntity<Map<String, String>> handleParticipationException(ParticipationException exception) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", exception.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Map<String, String>> handleRuntimeException(RuntimeException exception) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", exception.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

@@ -24,7 +24,4 @@ public class Hunt {
     @ManyToOne
     private Participation participation;
 
-
-
-
 }
