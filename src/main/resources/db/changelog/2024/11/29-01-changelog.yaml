@@ -1,0 +1,56 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1732871650626-1
+      author: Youcode
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_token
+                  name: id
+                  type: UUID
+              - column:
+                  name: token
+                  type: VARCHAR(255)
+              - column:
+                  name: token_type
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: revoked
+                  type: BOOLEAN
+              - column:
+                  constraints:
+                    nullable: false
+                  name: expired
+                  type: BOOLEAN
+              - column:
+                  name: user_id
+                  type: UUID
+            tableName: token
+  - changeSet:
+      id: 1732871650626-2
+      author: Youcode
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: token
+            constraintName: uc_token_token
+            tableName: token
+  - changeSet:
+      id: 1732871650626-3
+      author: Youcode
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: token
+            constraintName: FK_TOKEN_ON_USER
+            referencedColumnNames: id
+            referencedTableName: user
+

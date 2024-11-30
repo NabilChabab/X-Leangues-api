@@ -12,9 +12,7 @@ spring:
   liquibase:
     change-log: db/changelog/master.yaml
 
-  autoconfigure:
-    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
 server:
-  port: 8081
+  port: 8082
 
 
