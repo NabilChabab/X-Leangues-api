@@ -32,7 +32,7 @@ public class AppUserController {
 
 
     @GetMapping("/search-members")
-    @PreAuthorize("hasAuthority('JURY')")
+    @PreAuthorize("hasRole('JURY')")
     public ResponseEntity<List<SearchDTO>> searchMembers(
             @RequestParam(required = false) String cin,
             @RequestParam(required = false) String firstName,

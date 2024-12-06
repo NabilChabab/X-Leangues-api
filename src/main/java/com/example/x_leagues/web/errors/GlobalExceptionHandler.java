@@ -28,34 +28,27 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleUserAlreadyExistException(UserAlreadyExistException exception) {
         Map<String, String> error = new HashMap<>();
         error.put("error", exception.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleUserNotFoundException(UserNotFoundException exception) {
         Map<String, String> error = new HashMap<>();
         error.put("error", exception.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(CompetitionException.class)
     public ResponseEntity<Map<String, String>> handleCompetitionAlreadyExistException(CompetitionException exception) {
         Map<String, String> error = new HashMap<>();
         error.put("error", exception.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ParticipationException.class)
     public ResponseEntity<Map<String, String>> handleParticipationException(ParticipationException exception) {
         Map<String, String> error = new HashMap<>();
         error.put("error", exception.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
-    }
-
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Map<String, String>> handleRuntimeException(RuntimeException exception) {
-        Map<String, String> error = new HashMap<>();
-        error.put("error", exception.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }
