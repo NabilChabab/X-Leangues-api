@@ -73,7 +73,7 @@ public class AuthenticationService {
             return;
         }
         refreshToken = authHeader.substring(7);
-        userEmail = jwtService.extractUserName(refreshToken);
+        userEmail = jwtService.extractUsername(refreshToken);
         if (userEmail != null) {
             var user = this.repository.findByEmail(userEmail)
                 .orElseThrow();

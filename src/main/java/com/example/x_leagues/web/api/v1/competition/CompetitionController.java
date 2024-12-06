@@ -47,7 +47,7 @@ public class CompetitionController {
     }
 
     @GetMapping("/{id}/details")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('CAN_VIEW_COMPETITIONS')")
     public ResponseEntity<CompetitionResponseVM> competitionDetails(@PathVariable UUID id){
         CompetitionDetailsDTO competitionDetailsDTO = competitionService.competitionDetails(id);
         CompetitionResponseVM competitionResponseVM = competitionMapper.toDetailsVM(competitionDetailsDTO);

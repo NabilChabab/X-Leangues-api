@@ -40,18 +40,14 @@ public class SecurityConfig {
             .cors(Customizer.withDefaults())
             .authorizeHttpRequests(req ->
                 req.requestMatchers(WHITE_LIST_URL).permitAll()
+                    .requestMatchers("/api/v1/hunt/").hasAnyRole(ADMIN.name() , JURY.name())
+                    .requestMatchers(POST , "api/v1/competition/**").hasAuthority(CAN_MANAGE_COMPETITIONS.name())
                     .anyRequest()
                     .authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
             .authenticationProvider(authenticationProvider)
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-            .logout(logout ->
-                logout.logoutUrl("/api/v1/auth/logout")
-                    .addLogoutHandler((request, response, authentication) -> {
-                        SecurityContextHolder.clearContext();
-                    })
-            );
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
