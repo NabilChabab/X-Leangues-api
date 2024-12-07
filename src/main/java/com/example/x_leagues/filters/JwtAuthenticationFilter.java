@@ -1,7 +1,7 @@
 package com.example.x_leagues.filters;
 
 
-import com.example.x_leagues.services.impl.JwtService;
+import com.example.x_leagues.security.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
