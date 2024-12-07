@@ -4,6 +4,7 @@ package com.example.x_leagues.services.impl;
 
 import com.example.x_leagues.model.AppUser;
 import com.example.x_leagues.repository.AppUserRepository;
+import com.example.x_leagues.security.JwtService;
 import com.example.x_leagues.services.dto.AuthenticationRequestDTO;
 import com.example.x_leagues.services.dto.AuthenticationResponseDTO;
 import com.example.x_leagues.services.dto.RegisterRequestDTO;
