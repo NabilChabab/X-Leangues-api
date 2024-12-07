@@ -1,4 +1,4 @@
-package com.example.x_leagues.services.impl;
+package com.example.x_leagues.security;
 
 import com.example.x_leagues.model.AppUser;
 import io.jsonwebtoken.Claims;
