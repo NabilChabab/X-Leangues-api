@@ -47,7 +47,7 @@ public class ParticipationServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        //MockitoAnnotations.openMocks(this);
+        MockitoAnnotations.openMocks(this);
 
         // Setup mock Participation, Competition, and AppUser objects for testing
         competition = new Competition();
