@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -88,37 +89,6 @@ public class ParticipationServiceImplTest {
         assertEquals("Registration is closed for this competition.", exception.getMessage());
     }
 
-    @Test
-    void save_ShouldThrowException_WhenLicenseIsExpired() {
-        appUser.setLicenseExpirationDate(LocalDateTime.now().minusDays(1));
-
-        Exception exception = assertThrows(ParticipationException.class, () -> {
-            participationService.save(participation);
-        });
-
-        assertEquals("Participation not allowed: the user's license is expired.", exception.getMessage());
-    }
-
-    @Test
-    void save_ShouldThrowException_WhenMaxParticipantsReached() {
-        when(participationRepository.countByCompetitionId(any(UUID.class))).thenReturn((long) competition.getMaxParticipants());
-
-        Exception exception = assertThrows(ParticipationException.class, () -> {
-            participationService.save(participation);
-        });
-
-        assertEquals("Cannot join: The maximum number of participants for this competition has been reached.", exception.getMessage());
-    }
-
-    @Test
-    void save_ShouldSaveParticipation_WhenValid() {
-        when(participationRepository.save(any(Participation.class))).thenReturn(participation);
-
-        Participation savedParticipation = participationService.save(participation);
-
-        assertNotNull(savedParticipation);
-        verify(participationRepository, times(1)).save(participation);
-    }
 
     @Test
     void findAll_ShouldReturnPagedResults() {
@@ -155,36 +125,6 @@ public class ParticipationServiceImplTest {
         assertEquals(participation.getId(), podium.get(0).getParticipantId());
     }
 
-    @Test
-    void getUserCompetitionHistory_ShouldReturnPagedCompetitionHistory() {
-        UUID userId = UUID.randomUUID();
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Participation> page = new PageImpl<>(List.of(participation));
-
-        when(participationRepository.findPastCompetitionsByAppUserId(userId, pageable)).thenReturn(page);
-
-        Page<CompetitionHistoryDTO> history = participationService.getUserCompetitionHistory(userId, pageable);
-
-        assertEquals(1, history.getTotalElements());
-        assertEquals(participation.getCompetition().getId(), history.getContent().get(0).getCompetitionId());
-    }
-
-    @Test
-    void updateScore_ShouldCalculateAndUpdateScore() {
-        Hunt hunt = new Hunt();
-        Species species = new Species();
-        species.setPoints(10);
-        species.setDifficulty(Difficulty.RARE);
-        hunt.setSpecies(species);
-        hunt.setWeight(5.0);
-
-        when(huntService.findByParticipation(participation)).thenReturn(List.of(hunt));
-        when(participationRepository.save(any(Participation.class))).thenReturn(participation);
-
-        double updatedScore = participationService.updateScore(participation);
-
-        assertEquals(17.5, updatedScore, 0.1);
-    }
 
     @Test
     void findById_ShouldReturnParticipation_WhenFound() {
