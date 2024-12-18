@@ -1,74 +1,59 @@
 pipeline {
     agent any
     tools {
-        maven 'Maven' // Maven configuré dans Jenkins
+        maven 'Maven'
     }
 
     environment {
-        SONAR_HOST_URL = 'http://host.docker.internal:9000'  // URL du serveur SonarQube
-        SONAR_TOKEN = 'sqa_a8fb74c0b952480d7bf8ef4805dff5acfb81a138' // Token valide
+        SONAR_HOST_URL = 'http://host.docker.internal:9000'
+        SONAR_TOKEN = credentials('sonar-token')  // Use Jenkins credentials
     }
 
     stages {
         stage('Cleanup Workspace') {
             steps {
-                echo "Cleaning up workspace..."
-                deleteDir() // Nettoie complètement le workspace
+                cleanWs()  // More reliable workspace cleanup
             }
         }
 
         stage('Checkout') {
             steps {
-                echo "Checking out code from Git repository..."
-                sh "git clone https://github.com/ZudaPradana/sonar ."
+                git 'https://github.com/ZudaPradana/sonar.git'
             }
         }
 
         stage('Build') {
             steps {
-                echo "Building the project with Maven..."
                 sh 'mvn clean package -DskipTests'
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
-                echo "Running SonarQube analysis..."
-                withSonarQubeEnv('SonarQube Server') { // Assurez-vous que 'SonarQube Server' est configuré
-                    sh """
-                        mvn clean verify sonar:sonar \
+                withSonarQubeEnv('SonarQube Server') {
+                    sh '''
+                        mvn sonar:sonar \
                         -Dsonar.projectKey=com.example:x_leagues \
                         -Dsonar.projectName='x_leagues' \
-                        -Dsonar.host.url=${SONAR_HOST_URL} \
-                        -Dsonar.login=${SONAR_TOKEN}
-                    """
+                        -Dsonar.host.url=${SONAR_HOST_URL}
+                    '''
                 }
             }
         }
 
         stage('Quality Gate') {
             steps {
-                script {
-                    echo "Waiting for SonarQube Quality Gate result..."
-                    timeout(time: 5, unit: 'MINUTES') {
-                        def qg = waitForQualityGate()
-                        if (qg.status != 'OK') {
-                            error "Quality Gate failed with status: ${qg.status}"
-                        } else {
-                            echo "Quality Gate passed successfully!"
-                        }
-                    }
-                }
+                waitForQualityGate abortPipeline: true
             }
         }
     }
 
     post {
         success {
-            echo "Pipeline executed successfully!"
+            echo "Pipeline completed successfully!"
         }
         failure {
-            echo "Pipeline failed!"
+            echo "Pipeline encountered an error."
         }
     }
 }
