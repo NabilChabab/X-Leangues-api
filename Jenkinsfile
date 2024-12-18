@@ -12,7 +12,7 @@ pipeline {
     stages {
             stage('Cleanup Workspace') {
                 steps {
-                    cleanWs() // Ensure the workspace is clean before starting
+                    cleanWs()
                 }
             }
 
@@ -24,7 +24,7 @@ pipeline {
 
             stage('Build') {
                 steps {
-                    sh 'mvn clean install -DskipTests' // Using install for complete build
+                    sh 'mvn clean package -DskipTests'
                 }
             }
 
@@ -32,11 +32,10 @@ pipeline {
                 steps {
                     withSonarQubeEnv('SonarQube Server') {
                         sh '''
-                            mvn sonar:sonar \
-                            -Dsonar.projectKey=com.example:x_leagues \
-                            -Dsonar.projectName="x_leagues" \
-                            -Dsonar.host.url=${SONAR_HOST_URL} \
-                            -Dsonar.login=${SONAR_TOKEN}
+                            mvn verify sonar:sonar \
+                            -Dsonar.projectKey=x-leagues \
+                            -Dsonar.projectName="X Leagues" \
+                            -Dsonar.host.url=${SONAR_HOST_URL}
                         '''
                     }
                 }
@@ -44,7 +43,9 @@ pipeline {
 
             stage('Quality Gate') {
                 steps {
-                    waitForQualityGate abortPipeline: true // Abort if quality gate fails
+                    script {
+                        waitForQualityGate abortPipeline: true
+                    }
                 }
             }
         }
