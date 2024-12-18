@@ -159,6 +159,18 @@
             <artifactId>sonar-maven-plugin</artifactId>
             <version>3.9.1.2184</version> <!-- Make sure to use the correct version -->
           </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.6.0</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
     </build>
 
