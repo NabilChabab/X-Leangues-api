@@ -10,50 +10,51 @@ pipeline {
     }
 
     stages {
-        stage('Cleanup Workspace') {
-            steps {
-                cleanWs()  // More reliable workspace cleanup
+            stage('Cleanup Workspace') {
+                steps {
+                    cleanWs() // Ensure the workspace is clean before starting
+                }
             }
-        }
 
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/ZudaPradana/sonar.git'
+            stage('Checkout') {
+                steps {
+                    git branch: 'main', url: 'https://github.com/NabilChabab/X-Leangues-api.git'
+                }
             }
-        }
 
-        stage('Build') {
-            steps {
-                sh 'mvn clean package -DskipTests'
+            stage('Build') {
+                steps {
+                    sh 'mvn clean install -DskipTests' // Using install for complete build
+                }
             }
-        }
 
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('SonarQube Server') {
-                    sh '''
-                        mvn sonar:sonar \
-                        -Dsonar.projectKey=com.example:x_leagues \
-                        -Dsonar.projectName='x_leagues' \
-                        -Dsonar.host.url=${SONAR_HOST_URL}
-                    '''
+            stage('SonarQube Analysis') {
+                steps {
+                    withSonarQubeEnv('SonarQube Server') {
+                        sh '''
+                            mvn sonar:sonar \
+                            -Dsonar.projectKey=com.example:x_leagues \
+                            -Dsonar.projectName="x_leagues" \
+                            -Dsonar.host.url=${SONAR_HOST_URL} \
+                            -Dsonar.login=${SONAR_TOKEN}
+                        '''
+                    }
+                }
+            }
+
+            stage('Quality Gate') {
+                steps {
+                    waitForQualityGate abortPipeline: true // Abort if quality gate fails
                 }
             }
         }
 
-        stage('Quality Gate') {
-            steps {
-                waitForQualityGate abortPipeline: true
+        post {
+            success {
+                echo "Pipeline completed successfully!"
+            }
+            failure {
+                echo "Pipeline encountered an error."
             }
         }
-    }
-
-    post {
-        success {
-            echo "Pipeline completed successfully!"
-        }
-        failure {
-            echo "Pipeline encountered an error."
-        }
-    }
 }
