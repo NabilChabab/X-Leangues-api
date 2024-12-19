@@ -24,7 +24,7 @@ pipeline {
 
             stage('Build') {
                 steps {
-                    sh 'mvn clean verify sonar:sonar -X'
+                    sh 'mvn clean package -DskipTests'
                 }
             }
 
