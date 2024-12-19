@@ -42,13 +42,23 @@ pipeline {
                 }
             }
 
-            stage('Quality Gate') {
-                        steps {
-                            timeout(time: 2, unit: 'MINUTES') {
-                                waitForQualityGate abortPipeline: true
-                            }
-                        }
-                    }
+           stage('Quality Gate Check') {
+                       steps {
+                           script {
+                               def qualityGate = sh(
+                                   script: """
+                                   curl -s -u "$SONAR_TOKEN:" \
+                                   "$SONAR_HOST_URL/api/qualitygates/project_status?projectKey=x-leagues" \
+                                   | jq -r '.projectStatus.status'
+                                   """,
+                                   returnStdout: true
+                               ).trim()
+                               if (qualityGate != "OK") {
+                                   error "Quality Gate failed! Stopping the build."
+                               }
+                           }
+                       }
+                   }
         }
 
         post {
