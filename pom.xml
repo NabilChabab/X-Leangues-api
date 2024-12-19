@@ -28,7 +28,10 @@
     </scm>
     <properties>
         <java.version>17</java.version>
-        <sonar.login>sqa_b444e00ce0c9e9e807b1ba908442bd1547754b11</sonar.login>
+      <sonar.host.url>http://host.docker.internal:9000</sonar.host.url>
+      <sonar.login>sqa_b444e00ce0c9e9e807b1ba908442bd1547754b11</sonar.login>
+      <sonar.java.source>17</sonar.java.source>
+      <sonar.java.target>17</sonar.java.target>
     </properties>
     <dependencies>
         <dependency>
@@ -154,7 +157,12 @@
           <plugin>
             <groupId>org.sonarsource.scanner.maven</groupId>
             <artifactId>sonar-maven-plugin</artifactId>
-            <version>3.9.1.2184</version> <!-- Make sure to use the correct version -->
+            <version>3.9.1.2184</version>
+            <configuration>
+              <goals>
+                <goal>sonar</goal>
+              </goals>
+            </configuration>
           </plugin>
           <plugin>
             <groupId>org.codehaus.mojo</groupId>

@@ -31,12 +31,13 @@ pipeline {
             stage('SonarQube Analysis') {
                 steps {
                     withSonarQubeEnv('SonarQube Server') {
-                        sh '''
-                            mvn verify sonar:sonar \
+                        sh """
+                            mvn clean verify sonar:sonar \
                             -Dsonar.projectKey=x-leagues \
                             -Dsonar.projectName="X Leagues" \
-                            -Dsonar.host.url=${SONAR_HOST_URL}
-                        '''
+                            -Dsonar.host.url=${SONAR_HOST_URL} \
+                            -Dsonar.login=${SONAR_TOKEN}
+                        """
                     }
                 }
             }
