@@ -32,11 +32,11 @@ pipeline {
                 steps {
                     withSonarQubeEnv('SonarQube Server') {
                         sh """
-                            mvn clean verify sonar:sonar \
+                            mvn sonar:sonar \
                             -Dsonar.projectKey=x-leagues \
-                            -Dsonar.projectName="X Leagues" \
-                            -Dsonar.host.url=${SONAR_HOST_URL} \
-                            -Dsonar.login=${SONAR_TOKEN}
+                            -Dsonar.projectName='X Leagues' \
+                            -Dsonar.host.url=http://localhost:9000 \
+                            -Dsonar.token=${SONAR_TOKEN}
                         """
                     }
                 }
