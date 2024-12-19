@@ -43,12 +43,12 @@ pipeline {
             }
 
             stage('Quality Gate') {
-                steps {
-                    script {
-                        waitForQualityGate abortPipeline: true
+                        steps {
+                            timeout(time: 2, unit: 'MINUTES') {
+                                waitForQualityGate abortPipeline: true
+                            }
+                        }
                     }
-                }
-            }
         }
 
         post {
