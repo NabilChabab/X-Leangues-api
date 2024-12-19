@@ -35,7 +35,7 @@ pipeline {
                             mvn sonar:sonar \
                             -Dsonar.projectKey=x-leagues \
                             -Dsonar.projectName='X Leagues' \
-                            -Dsonar.host.url=http://localhost:9000 \
+                            -Dsonar.host.url=http://host.docker.internal:9000 \
                             -Dsonar.token=${SONAR_TOKEN}
                         """
                     }
