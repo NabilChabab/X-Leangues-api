@@ -158,11 +158,7 @@
             <groupId>org.sonarsource.scanner.maven</groupId>
             <artifactId>sonar-maven-plugin</artifactId>
             <version>3.9.1.2184</version>
-            <configuration>
-              <goals>
-                <goal>sonar</goal>
-              </goals>
-            </configuration>
+            <!-- Remove the configuration section with goals -->
           </plugin>
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
