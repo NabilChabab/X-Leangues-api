@@ -6,7 +6,7 @@ pipeline {
 
     environment {
         SONAR_HOST_URL = 'http://host.docker.internal:9000'
-        SONAR_TOKEN = 'sqa_a8fb74c0b952480d7bf8ef4805dff5acfb81a138'  // Use Jenkins credentials
+        SONAR_TOKEN = 'sqa_b444e00ce0c9e9e807b1ba908442bd1547754b11'  // Use Jenkins credentials
     }
 
     stages {
