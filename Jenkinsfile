@@ -87,15 +87,18 @@ pipeline {
                            stage('Setup Docker Network') {
                                steps {
                                    script {
-                                       docker.withServer('unix:///var/run/docker.sock') {
-                                           sh """
-                                               # Create network if it doesn't exist
-                                               docker network create ${DOCKER_NETWORK} || true
-                                           """
-                                       }
+                                       sh """
+                                       if ! docker network inspect ${DOCKER_NETWORK} >/dev/null 2>&1; then
+                                           echo "Creating Docker network: ${DOCKER_NETWORK}"
+                                           docker network create ${DOCKER_NETWORK}
+                                       else
+                                           echo "Docker network ${DOCKER_NETWORK} already exists."
+                                       fi
+                                       """
                                    }
                                }
                            }
+
 
                            stage('Clean Up Existing Container') {
                                steps {
@@ -118,35 +121,42 @@ pipeline {
                            stage('Run Docker Container') {
                                steps {
                                    script {
-                                       docker.withServer('unix:///var/run/docker.sock') {
-                                           // Run new container
-                                           sh """
-                                               # Run the application container
-                                               docker run -d \
-                                               --name hunter-league-app \
-                                               --network ${DOCKER_NETWORK} \
-                                               -p \${APP_PORT}:\${APP_PORT} \
-                                               -e SPRING_DATASOURCE_URL="jdbc:postgresql://\${DB_HOST}:\${DB_PORT}/\${DB_NAME}" \
-                                               -e SPRING_DATASOURCE_USERNAME="\${DB_USER}" \
-                                               -e SPRING_DATASOURCE_PASSWORD="\${DB_PASSWORD}" \
-                                               -e SERVER_PORT="\${APP_PORT}" \
-                                               ${DOCKER_IMAGE}:latest
-                                           """
+                                       sh """
+                                       docker run -d \
+                                           --name hunter-league-app \
+                                           --network ${DOCKER_NETWORK} \
+                                           -p ${APP_PORT}:${APP_PORT} \
+                                           -e SPRING_DATASOURCE_URL="jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}" \
+                                           -e SPRING_DATASOURCE_USERNAME="${DB_USER}" \
+                                           -e SPRING_DATASOURCE_PASSWORD="${DB_PASSWORD}" \
+                                           -e SERVER_PORT="${APP_PORT}" \
+                                           ${DOCKER_IMAGE}:latest
 
-                                           // Wait for container to start
-                                           sh """
-                                               echo "Waiting for container to start..."
-                                               sleep 10
-                                               if ! docker ps | grep -q hunter-league-app; then
-                                                   echo "Container failed to start. Showing logs:"
-                                                   docker logs hunter-league-app
-                                                   exit 1
-                                               fi
-                                           """
-                                       }
+                                       sleep 10
+
+                                       if ! docker ps | grep -q hunter-league-app; then
+                                           echo "Application container failed to start."
+                                           docker logs hunter-league-app
+                                           exit 1
+                                       fi
+                                       """
                                    }
                                }
                            }
+
+                           stage('Push to Docker Hub') {
+                               steps {
+                                   script {
+                                       sh """
+                                       echo ${DOCKER_HUB_PASSWORD} | docker login -u ${DOCKER_HUB_USERNAME} --password-stdin
+                                       docker tag ${DOCKER_IMAGE}:latest ${DOCKER_HUB_USERNAME}/${DOCKER_IMAGE}:latest
+                                       docker push ${DOCKER_HUB_USERNAME}/${DOCKER_IMAGE}:latest
+                                       """
+                                   }
+                               }
+                           }
+
+
         }
 
         post {
