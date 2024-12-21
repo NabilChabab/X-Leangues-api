@@ -70,16 +70,24 @@ pipeline {
             }
         }
 
+
+
         stage('Build Docker Image') {
             steps {
-                sh """
-                    docker build -t ${DOCKER_IMAGE}:latest \
-                    --build-arg DB_URL="jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}" \
-                    --build-arg DB_USERNAME="${DB_USER}" \
-                    --build-arg DB_PASSWORD="${DB_PASSWORD}" \
-                    --build-arg SERVER_PORT="${APP_PORT}" \
-                    .
-                """
+                script {
+                    try {
+                        sh """
+                            docker build -t ${DOCKER_IMAGE}:latest \
+                            --build-arg DB_URL="jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}" \
+                            --build-arg DB_USERNAME="${DB_USER}" \
+                            --build-arg DB_PASSWORD="${DB_PASSWORD}" \
+                            --build-arg SERVER_PORT="${APP_PORT}" \
+                            .
+                        """
+                    } catch (Exception e) {
+                        error "Docker build failed: ${e.message}"
+                    }
+                }
             }
         }
 
