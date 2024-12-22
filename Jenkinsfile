@@ -28,7 +28,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/NabilChabab/X-Leangues-api.git'
+                git branch: 'main', url: 'https://github.com/NabilChabab/X-Leangues-api'
             }
         }
 
