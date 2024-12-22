@@ -28,15 +28,18 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                checkout scm: [
+                checkout([
                     $class: 'GitSCM',
-                    branches: [[name: 'main']],
+                    branches: [[name: '*/main']],
+                    doGenerateSubmoduleConfigurations: false,
+                    extensions: [],
                     userRemoteConfigs: [[
                         url: 'https://github.com/NabilChabab/X-Leangues-api'
                     ]]
-                ]
+                ])
             }
         }
+
 
         stage('Build') {
             steps {
