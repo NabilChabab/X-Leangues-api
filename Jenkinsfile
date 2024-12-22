@@ -28,7 +28,13 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/NabilChabab/X-Leangues-api'
+                checkout scm: [
+                    $class: 'GitSCM',
+                    branches: [[name: 'main']],
+                    userRemoteConfigs: [[
+                        url: 'https://github.com/NabilChabab/X-Leangues-api'
+                    ]]
+                ]
             }
         }
 
