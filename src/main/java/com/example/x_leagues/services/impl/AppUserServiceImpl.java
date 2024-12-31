@@ -8,6 +8,7 @@ import com.example.x_leagues.services.AppUserService;
 import com.example.x_leagues.exceptions.UserNotFoundException;
 import com.example.x_leagues.repository.AppUserRepository;
 import com.example.x_leagues.services.dto.SearchDTO;
+import com.example.x_leagues.services.dto.UserParticipationCountDTO;
 import com.example.x_leagues.utils.PasswordEncoderUtil;
 
 import org.springframework.data.domain.Page;
@@ -67,8 +68,8 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<AppUser> findAll(Pageable pageable) {
-        return appUserRepository.findAll(pageable);
+    public Page<UserParticipationCountDTO> findAll(Pageable pageable) {
+        return appUserRepository.findAllWithParticipationCounts(pageable);
     }
 
     @Override

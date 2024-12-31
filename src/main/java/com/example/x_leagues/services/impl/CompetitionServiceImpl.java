@@ -70,9 +70,25 @@ public class CompetitionServiceImpl implements CompetitionService {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<Competition> findAll(Pageable pageable) {
-        return competitionRepository.findAll(pageable);
+    public Page<CompetitionDetailsDTO> findAll(Pageable pageable) {
+        Page<Competition> competitions = competitionRepository.findAll(pageable);
+
+        Page<CompetitionDetailsDTO> competitionDTOPage = competitions.map(competition -> {
+            Integer numberOfParticipants = competition.getParticipations() != null
+                ? competition.getParticipations().size()
+                : 0;
+            return new CompetitionDetailsDTO(
+                competition.getLocation(),
+                competition.getDate(),
+                numberOfParticipants,
+                competition.getOpenRegistration(),
+                competition.getCode()
+            );
+        });
+
+        return competitionDTOPage;
     }
+
 
     @Override
     public CompetitionDetailsDTO competitionDetails(UUID competitionId) {
@@ -83,7 +99,9 @@ public class CompetitionServiceImpl implements CompetitionService {
         return new CompetitionDetailsDTO(
                 competition.getLocation(),
                 competition.getDate(),
-                numberOfParticipants
+                numberOfParticipants,
+                competition.getOpenRegistration(),
+                competition.getCode()
         );
     }
 

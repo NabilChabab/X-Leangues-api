@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
-      id: 1729538408373-1
-      author: epshiro
+      id: 1735058609350-1
+      author: Youcode
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -13,10 +13,31 @@ databaseChangeLog:
                     primaryKeyName: pk_competition
                   name: id
                   type: UUID
+              - column:
+                  name: code
+                  type: VARCHAR(255)
+              - column:
+                  name: location
+                  type: VARCHAR(255)
+              - column:
+                  name: date
+                  type: DATETIME
+              - column:
+                  name: species_type
+                  type: VARCHAR(255)
+              - column:
+                  name: min_participants
+                  type: INT
+              - column:
+                  name: max_participants
+                  type: INT
+              - column:
+                  name: open_registration
+                  type: BOOLEAN
             tableName: competition
   - changeSet:
-      id: 1729538408373-2
-      author: epshiro
+      id: 1735058609350-2
+      author: Youcode
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -28,10 +49,19 @@ databaseChangeLog:
                     primaryKeyName: pk_hunt
                   name: id
                   type: UUID
+              - column:
+                  name: species_id
+                  type: UUID
+              - column:
+                  name: weight
+                  type: DOUBLE
+              - column:
+                  name: participation_id
+                  type: UUID
             tableName: hunt
   - changeSet:
-      id: 1729538408373-3
-      author: epshiro
+      id: 1735058609350-3
+      author: Youcode
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -46,10 +76,16 @@ databaseChangeLog:
               - column:
                   name: user_id
                   type: UUID
+              - column:
+                  name: competition_id
+                  type: UUID
+              - column:
+                  name: score
+                  type: DOUBLE
             tableName: participation
   - changeSet:
-      id: 1729538408373-4
-      author: epshiro
+      id: 1735058609350-4
+      author: Youcode
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -61,10 +97,27 @@ databaseChangeLog:
                     primaryKeyName: pk_species
                   name: id
                   type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: category
+                  type: VARCHAR(255)
+              - column:
+                  name: minimum_weight
+                  type: DOUBLE
+              - column:
+                  name: difficulty
+                  type: VARCHAR(255)
+              - column:
+                  name: points
+                  type: INT
             tableName: species
   - changeSet:
-      id: 1729538408373-5
-      author: epshiro
+      id: 1735058609350-5
+      author: Youcode
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -108,8 +161,50 @@ databaseChangeLog:
                   type: DATETIME
             tableName: user
   - changeSet:
-      id: 1729538408373-6
-      author: epshiro
+      id: 1735058609350-6
+      author: Youcode
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: name
+            constraintName: uc_species_name
+            tableName: species
+  - changeSet:
+      id: 1735058609350-7
+      author: Youcode
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: participation_id
+            baseTableName: hunt
+            constraintName: FK_HUNT_ON_PARTICIPATION
+            referencedColumnNames: id
+            referencedTableName: participation
+  - changeSet:
+      id: 1735058609350-8
+      author: Youcode
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: species_id
+            baseTableName: hunt
+            constraintName: FK_HUNT_ON_SPECIES
+            referencedColumnNames: id
+            referencedTableName: species
+  - changeSet:
+      id: 1735058609350-9
+      author: Youcode
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: competition_id
+            baseTableName: participation
+            constraintName: FK_PARTICIPATION_ON_COMPETITION
+            referencedColumnNames: id
+            referencedTableName: competition
+  - changeSet:
+      id: 1735058609350-10
+      author: Youcode
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:

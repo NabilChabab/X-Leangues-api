@@ -2,6 +2,7 @@ package com.example.x_leagues.web.api.v1.user;
 
 import com.example.x_leagues.model.AppUser;
 import com.example.x_leagues.services.dto.SearchDTO;
+import com.example.x_leagues.services.dto.UserParticipationCountDTO;
 import com.example.x_leagues.services.impl.AppUserServiceImpl;
 import com.example.x_leagues.web.vm.auth.ResponseVM;
 import com.example.x_leagues.web.vm.mapper.AppUserMapper;
@@ -51,10 +52,9 @@ public class AppUserController {
 
 
     @GetMapping("/users")
-    public ResponseEntity<Page<ResponseVM>> findAll(Pageable pageable){
-        Page<AppUser> appUsers = appUserService.findAll(pageable);
-        Page<ResponseVM> responseVMS = appUsers.map(appUserMapper::toVM);
-        return new ResponseEntity<>(responseVMS, HttpStatus.OK);
+    public ResponseEntity<Page<UserParticipationCountDTO>> findAll(Pageable pageable) {
+        Page<UserParticipationCountDTO> userParticipationCountDTOS = appUserService.findAll(pageable);
+        return new ResponseEntity<>(userParticipationCountDTOS, HttpStatus.OK);
     }
 
 

@@ -11,6 +11,7 @@ spring:
 
   liquibase:
     change-log: db/changelog/master.yaml
+    enabled: false
 
 server:
   port: 8082
