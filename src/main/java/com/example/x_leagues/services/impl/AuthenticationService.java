@@ -59,7 +59,6 @@ public class AuthenticationService {
         return AuthenticationResponseDTO.builder()
             .accessToken(jwtToken)
             .refreshToken(refreshToken)
-            .role(user.getRole().name())
             .build();
     }
 

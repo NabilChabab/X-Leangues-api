@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AuthenticationRequestDTO {
 
-    @NotBlank(message = "username cannot be blank")
+    @NotBlank(message = "email cannot be blank")
     private String email;
 
     @NotBlank(message = "password cannot be blank")

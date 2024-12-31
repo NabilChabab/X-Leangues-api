@@ -48,6 +48,8 @@ public class AppUser implements UserDetails {
 
     private LocalDateTime licenseExpirationDate;
 
+
+
     @OneToMany(mappedBy = "appUser")
     private List<Participation> participations;
 

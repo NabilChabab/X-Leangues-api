@@ -2,6 +2,7 @@ package com.example.x_leagues.services;
 
 import com.example.x_leagues.model.AppUser;
 import com.example.x_leagues.services.dto.SearchDTO;
+import com.example.x_leagues.services.dto.UserParticipationCountDTO;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +22,7 @@ public interface AppUserService {
 
     AppUser login(String username, String password);
 
-    Page<AppUser> findAll(Pageable pageable);
+    Page<UserParticipationCountDTO> findAll(Pageable pageable);
 
     List<SearchDTO> searchMembers(SearchDTO searchDTO);
 }
