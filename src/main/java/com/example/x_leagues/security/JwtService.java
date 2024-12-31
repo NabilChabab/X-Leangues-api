@@ -56,6 +56,7 @@ public class JwtService {
         UserDetails userDetails
     ) {
         UUID userId = ((AppUser) userDetails).getId();
+        String username = ((AppUser) userDetails).getFirstName() + " " + ((AppUser) userDetails).getLastName();
 
         String role = userDetails.getAuthorities().stream()
             .map(Object::toString)
@@ -66,10 +67,10 @@ public class JwtService {
         return Jwts.builder()
             .setClaims(claims)
             .setSubject(userDetails.getUsername())
-            .claim("id", userId.toString())
             .claim("role", role)
+            .claim("username", username)
             .setIssuedAt(new Date(System.currentTimeMillis()))
-            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
             .signWith(getSigningKey(), SignatureAlgorithm.HS256)
             .compact();
     }

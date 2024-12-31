@@ -40,11 +40,17 @@ public class CompetitionController {
 
 
     @GetMapping("/all")
-    public ResponseEntity<Page<CompetitionResponseVM>> findAll(Pageable pageable){
-        Page<Competition> competitions = competitionService.findAll(pageable);
-        Page<CompetitionResponseVM> competitionResponseVMS = competitions.map(competitionMapper::toVM);
-        return new ResponseEntity<>(competitionResponseVMS, HttpStatus.OK);
+    public ResponseEntity<Page<CompetitionResponseVM>> findAll(Pageable pageable) {
+        // Fetch paginated competitions from the service
+        Page<CompetitionDetailsDTO> competitionDetailsDTOs = competitionService.findAll(pageable);
+
+        // Map CompetitionDetailsDTO to CompetitionResponseVM using the mapper
+        Page<CompetitionResponseVM> competitionResponseVMS = competitionDetailsDTOs.map(competitionMapper::toDetailsVM);
+
+        // Return the response with HTTP status OK
+        return ResponseEntity.ok(competitionResponseVMS);
     }
+
 
     @GetMapping("/{id}/details")
     @PreAuthorize("hasAuthority('CAN_VIEW_COMPETITIONS')")

@@ -11,4 +11,6 @@ public class CompetitionResponseVM {
     private String location;
     private LocalDateTime date;
     private Integer numberOfParticipants;
+    private Boolean openRegistration;
+    private String code;
 }

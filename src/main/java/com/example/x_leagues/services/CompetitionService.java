@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface CompetitionService {
     Competition save(Competition competition);
 
-    Page<Competition> findAll(Pageable pageable);
+    Page<CompetitionDetailsDTO> findAll(Pageable pageable);
 
     CompetitionDetailsDTO competitionDetails(UUID competitionId);
 }

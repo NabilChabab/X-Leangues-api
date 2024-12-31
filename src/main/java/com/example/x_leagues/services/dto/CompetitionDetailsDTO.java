@@ -12,4 +12,6 @@ public class CompetitionDetailsDTO {
     private String location;
     private LocalDateTime date;
     private Integer numberOfParticipants;
+    private Boolean openRegistration;
+    private String code;
 }
